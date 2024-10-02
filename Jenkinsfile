@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        GITHUB_REPO = 'https://github.com/andervafla/java_deploy.git' 
+        GITHUB_REPO = 'https://github.com/andervafla/java_deploy.git'
         TERRAFORM_DIR = 'terraformAWS'
     }
 
@@ -15,11 +15,12 @@ pipeline {
 
         stage('Checkout from Git') {
             steps {
-                // Видалення існуючої директорії, якщо вона є
-                sh 'rm -rf ./*'
-
-                // Використовуємо git clone з параметрами depth та branch
-                sh "git clone --depth 1 --branch main ${GITHUB_REPO} ."
+                // Клонування з параметром clean
+                checkout([$class: 'GitSCM', 
+                    branches: [[name: 'main']], 
+                    userRemoteConfigs: [[url: "${GITHUB_REPO}"]],
+                    extensions: [[$class: 'CleanBeforeCheckout']]
+                ])
             }
         }
 
@@ -50,7 +51,6 @@ pipeline {
         stage('Apply Terraform') {
             steps {
                 dir("${TERRAFORM_DIR}") {
-                    // Виконання команди Terraform
                     sh '''
                         terraform apply -auto-approve
                     '''

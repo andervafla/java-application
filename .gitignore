@@ -1,0 +1,11 @@
+/.gradle
+/.idea
+build/libs
+/gradle
+/backup
+/src/test/resources/hibernatetest.properties
+/schedule_logs
+/terraformAWS/.terraform
+/terraform/
+terraformAWS/key
+
